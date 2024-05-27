@@ -3,7 +3,7 @@
 ```bash
 git clone {URL}
 
-cd LTP_GPT_scrum_03_back
+cd LTP_GPT_scrum_03back
 
 python3 -m venv venv
 

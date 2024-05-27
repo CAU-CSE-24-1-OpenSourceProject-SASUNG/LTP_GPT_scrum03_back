@@ -1,9 +1,9 @@
-# LTP_GPT_scrum_01
+# LTP_GPT_scrum_03
 
 ```bash
 git clone {URL}
 
-cd LTP_GPT_scrum_03
+cd LTP_GPT_scrum_03_back
 
 python3 -m venv venv
 

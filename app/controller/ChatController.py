@@ -28,24 +28,22 @@ def get_chat_router(userService: UserService, gameService: GameService, querySer
             riddle = game.riddle
             if game.query_ticket > 0:  # query 개수 제한
                 # TODO: 메모이제이션
-
                 count, response = ltp_gpt.embedding_question(query, riddle)  # embedding 
-                # print(response)
                 if count == 0:
                     query_id = queryService.create_query(query, response)  # query 생성
                     gqService.create_game_query(game_id, query_id)  # game_query 생성 : query ticket -= 1
-                    return JSONResponse(content={"queryId": query_id, "response": response})
-
+                    return JSONResponse(content={"queryId": query_id, "queryCount": game.query_ticket, "response": response})
                 elif count > 0:
                     response = ltp_gpt.prompting_question(query, riddle, game.game_id)  # 2차 프롬프팅
                     query_id = queryService.create_query(query, response)  # query 생성
                     gqService.create_game_query(game_id, query_id)  # game_query 생성 : query ticket -= 1
-                    if game.is_first is True and game.progress == 100:  # 정답일 때
-                        correct_time = datetime.datetime.now() - datetime.datetime.strptime(
-                            request.session.get('game_start_time'), "%Y-%m-%d %H:%M:%S")
-                        gameService.correct_game(game_id, correct_time)
+                    if game.is_first is True and game.hit is False and game.progress == 100:  # 정답일 때
+                        gameService.first_correct_game(game_id)
                         game = gameService.get_game(game_id)
-                        rankingService.update_ranking(game)  # 랭킹 업데이트
+                        rankingService.update_ranking(game)
+                        userService.level_up(user_id)
+                    elif game.is_first is False and game.hit is False and game.progress == 100:  # 나갔다 들어온 게임에서 정답을 맞췄을 때
+                        gameService.correct_game(game_id)
                         userService.level_up(user_id)  # 경험치 증가
                     return JSONResponse(content={"queryId": query_id, "queryCount": game.query_ticket, "response": response})
             else:

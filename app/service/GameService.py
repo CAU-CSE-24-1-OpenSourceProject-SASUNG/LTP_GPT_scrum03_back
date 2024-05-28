@@ -46,9 +46,10 @@ class GameService:
         game.is_first = False
         game.updatedAt = datetime.datetime.now()
 
-    # 게임에서 정답을 맞췄을 때
-    def correct_game(self, game_id, correct_time):
+    # 첫 게임에서 정답을 맞췄을 때
+    def first_correct_game(self, game_id):
         game = self.get_game(game_id)
+        correct_time = datetime.datetime.now() - game.createdAt
         if game:
             game_queries = self.session.query(Game_Query).filter_by(game_id=game.game_id).all()
             query_length = 0
@@ -60,17 +61,18 @@ class GameService:
             game.hit = True
             self.session.commit()
 
-    # 게임에서 나갔을 때
-    def end_game(self, game_id, play_time):
+    # 첫 게임이 아닌 게임에서 정답을 맞췄을 때
+    def correct_game(self, game_id):
         game = self.get_game(game_id)
+        play_time = datetime.datetime.now() - game.createdAt
         if game:
-            game_queries = self.session.query(Game_Query).filter_by(game_id=game_id).all()
+            game_queries = self.session.query(Game_Query).filter_by(game_id=game.game_id).all()
             query_length = 0
             for game_query in game_queries:
                 query_length += len(game_query.query.query)
             game.query_length = query_length
-            game.play_time += play_time
-        self.session.commit()
+            game.play_time = play_time
+            self.session.commit()
 
     # 진행률 업데이트
     def set_progress(self, game_id, progress):

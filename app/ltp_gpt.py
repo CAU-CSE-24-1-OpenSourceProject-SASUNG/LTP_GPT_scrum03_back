@@ -6,7 +6,6 @@ import openai
 from dotenv import load_dotenv
 
 from app.db_init import session
-from .service.RiddlePromptingService import RiddlePromptingService
 from .service.UserService import UserService
 
 load_dotenv()
@@ -29,7 +28,6 @@ def similarity(embedding1, embedding2):
 
 
 userService = UserService(session)
-riddlePromptingService = RiddlePromptingService(session)
 
 
 # Embedding, 1차 프롬프팅

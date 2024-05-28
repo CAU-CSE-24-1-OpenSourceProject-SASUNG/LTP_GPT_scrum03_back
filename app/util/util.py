@@ -16,10 +16,9 @@ def get_token_from_header(request: Request) -> str:
         raise HTTPException(status_code=401, detail="Invalid Authorization header format")
 
 
-def get_embeddings(problem, situation, answer):
-    situations = situation.split(".")  # 상황 문장별로 파싱
+def get_embeddings(problem, situations, answers):
     problem_embedding = ltp_gpt.generate_embedding(problem)
     situation_embeddings = [ltp_gpt.generate_embedding(sentence.strip()) for sentence in situations]
-    answer_embedding = ltp_gpt.generate_embedding(answer)
+    answer_embeddings = [ltp_gpt.generate_embedding(answer.strip()) for answer in answers]
 
-    return problem_embedding, situation_embeddings, answer_embedding
+    return problem_embedding, situation_embeddings, answer_embeddings

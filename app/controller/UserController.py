@@ -30,14 +30,15 @@ def get_user_router(userService: UserService):
             print(e)
             return JSONResponse(content={"error": str(e)}, status_code=400)
 
+    # 유저 정보
     @router.get("/info")
     async def info(request: Request):
         try:
             token = get_token_from_header(request)
             user_email = await authenticate(token)
             user = userService.get_user_email(user_email)
-
-            return JSONResponse(content={"riddleTicket": user.riddle_ticket, "gameTicket": user.game_ticket})
+            return JSONResponse(content={"experience": user.experience, "riddleTicket": user.riddle_ticket,
+                                         "gameTicket": user.game_ticket})
         except Exception as e:
             print(e)
             return JSONResponse(content={"error": str(e)}, status_code=404)

@@ -9,6 +9,9 @@ from app.controller.ChatController import get_chat_router
 from app.controller.GameController import get_game_router
 from app.controller.RiddleController import get_riddle_router
 from app.controller.UserController import get_user_router
+from app.controller.RankingController import get_ranking_router
+from app.controller.FeedbackController import get_feedback_router
+from app.controller.TotalFeedbackController import get_totalFeedback_router
 # google login
 from .config import SECRET_KEY
 from .db_init import session, engine
@@ -18,7 +21,6 @@ from .service.GameQueryService import GameQueryService
 from .service.GameService import GameService
 from .service.QueryService import QueryService
 from .service.RankingService import RankingService
-from .service.RiddlePromptingService import RiddlePromptingService
 from .service.RiddleService import RiddleService
 from .service.TotalFeedbackService import TotalFeedbackService
 from .service.UserGameService import UserGameService
@@ -53,13 +55,15 @@ totalFeedbackService = TotalFeedbackService(session)
 rankingService = RankingService(session)
 ugService = UserGameService(session)
 gqService = GameQueryService(session)
-rpService = RiddlePromptingService(session)
 
 # 라우터 등록 (Controller)
 app.include_router(get_chat_router(userService, gameService, queryService, gqService, rankingService), prefix="/chat")
 app.include_router(get_game_router(userService, gameService, ugService, gqService, riddleService), prefix="/game")
-app.include_router(get_riddle_router(userService, riddleService, rpService), prefix="/riddle")
+app.include_router(get_riddle_router(userService, riddleService), prefix="/riddle")
 app.include_router(get_user_router(userService), prefix="/user")
+app.include_router(get_ranking_router(rankingService), prefix="/ranking")
+app.include_router(get_feedback_router(userService, feedbackService), prefix="/feedback")
+app.include_router(get_totalFeedback_router(userService, totalFeedbackService), prefix="/totalFeedback")
 
 # DB 모든 데이터 삭제
 with engine.connect() as conn:

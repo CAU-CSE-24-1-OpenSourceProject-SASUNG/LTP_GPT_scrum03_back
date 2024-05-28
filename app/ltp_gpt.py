@@ -65,18 +65,13 @@ def evaluate_question(question, riddle):
             gpt_prompting += f"상황 문장: {riddle.situation} "
             gpt_prompting += f"정답 문장: {riddle.answer} "
             gpt_prompting += "판단 과정과 결과를 Table 형식으로 표현합니다. "
-            gpt_prompting += "| 문장 | 사용자의 입력과 일치하는지 아닌지 판단하는 내용 | True or False |"
+            gpt_prompting += "| 문제 문장 | <사용자의 입력과 일치하는지 아닌지 판단하는 내용> | True or False |"
+            gpt_prompting += "| 상황 문장 | <사용자의 입력과 일치하는지 아닌지 판단하는 내용> | True or False |"
+            gpt_prompting += "| 정답 문장 | <사용자의 입력과 일치하는지 아닌지 판단하는 내용> | True or False |"
             gpt_prompting += "이러한 table형태로 3개의 레코드가 나와야 합니다."
+            #gpt_prompting += "문제/상황/정답이 각각 일치하는 문장이 하나 이상 존재하면 True로 판단하면 됩니다."
 
-            assistants = riddlePromptingService.get_all_prompting(riddle.riddle_id)
-            assistant_prompting = []
-            for i in assistants:
-                assistant_prompting.append({"role": "user", "content": i.user_query})
-                # print(i.user_query)
-                assistant_prompting.append({"role": "assistant", "content": i.assistant_response})
-                # print(i.assistant_response)
-            message = [{"role": "system", "content": gpt_prompting}] + assistant_prompting + [
-                {"role": "user", "content": question}]
+            message = [{"role": "system", "content": gpt_prompting}] + [{"role": "user", "content": question}]
             # print(message)
             response = openai.chat.completions.create(
                 model="gpt-3.5-turbo",
@@ -91,7 +86,6 @@ def evaluate_question(question, riddle):
             myList = []
             myDictionary = {}
             index_dash = ans.find('-')
-            ans = ans[index_dash:]
             print(ans)
 
             TrueMatches = re.finditer("True", ans)
@@ -149,7 +143,7 @@ def evaluate_similarity(question, riddle):
     )
     ans = response.choices[0].message.content
 
-    # print(ans)
+    print(ans)
 
     myList = []
     myDictionary = {}

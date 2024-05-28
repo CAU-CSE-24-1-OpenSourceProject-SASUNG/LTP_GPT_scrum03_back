@@ -7,7 +7,7 @@ from app.util.util import *
 def get_ranking_router(rankingService: RankingService):
     router = APIRouter()
 
-    @router.get('/')
+    @router.get('')
     async def get_ranking(request: Request):
         try:
             body = await request.json()

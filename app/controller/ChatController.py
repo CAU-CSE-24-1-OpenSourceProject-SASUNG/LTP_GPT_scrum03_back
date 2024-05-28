@@ -28,14 +28,17 @@ def get_chat_router(userService: UserService, gameService: GameService, querySer
             game = gameService.get_game(game_id)
             riddle = game.riddle
             if game.query_ticket > 0:  # query 개수 제한
-                # TODO 메모이제이션
-                response = ltp_gpt.evaluate_question(query, riddle)  # 1차 프롬프팅
-                query_id = queryService.create_query(query, response)  # query 생성
-                gqService.create_game_query(game_id, query_id)  # game_query 생성 : query ticket -= 1
+                # TODO: 메모이제이션
+
+                count, response = ltp_gpt.embedding_question(query, riddle)  # embedding 
                 # print(response)
-                if '맞습니다' in response or '정답과 유사합니다' in response:
-                    similarity = ltp_gpt.evaluate_similarity(query, riddle)  # 2차 프롬프팅
-                    gameService.set_progress(game_id, similarity)  # game 진행도 업데이트
+                if count == 0:
+                    query_id = queryService.create_query(query, response)  # query 생성
+                    gqService.create_game_query(game_id, query_id)  # game_query 생성 : query ticket -= 1
+                    return JSONResponse(content={"queryId": query_id, "response": response})
+
+                elif count > 0:
+                    response = ltp_gpt.prompting_question(query, riddle, game.game_id)  # 2차 프롬프팅
                     if game.is_first is True and game.progress == 100:  # 정답일 때
                         correct_time = datetime.datetime.now() - datetime.datetime.strptime(
                             request.session.get('game_start_time'), "%Y-%m-%d %H:%M:%S")
@@ -43,8 +46,7 @@ def get_chat_router(userService: UserService, gameService: GameService, querySer
                         game = gameService.get_game(game_id)
                         rankingService.update_ranking(game)  # 랭킹 업데이트
                         userService.level_up(user_id)  # 경험치 증가
-                return JSONResponse(content={"queryId": query_id, "response": response})
-                # return JSONResponse(content={"queryId": query_id, "queryCount": game.query_ticket, "response": response})
+                    return JSONResponse(content={"queryId": query_id, "queryCount": game.query_ticket, "response": response})
             else:
                 return JSONResponse(content={'error': "Failed to create query"}, status_code=400)
         except Exception as e:

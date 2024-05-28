@@ -2,7 +2,6 @@ from fastapi import APIRouter
 from starlette.responses import JSONResponse
 
 from app.auth.authenticate import authenticate
-from app.auth.jwt import *
 from app.domain.dto.QueryInfoDto import QueryInfoDto
 from app.service.GameQueryService import GameQueryService
 from app.service.GameService import GameService
@@ -39,6 +38,8 @@ def get_chat_router(userService: UserService, gameService: GameService, querySer
 
                 elif count > 0:
                     response = ltp_gpt.prompting_question(query, riddle, game.game_id)  # 2차 프롬프팅
+                    query_id = queryService.create_query(query, response)  # query 생성
+                    gqService.create_game_query(game_id, query_id)  # game_query 생성 : query ticket -= 1
                     if game.is_first is True and game.progress == 100:  # 정답일 때
                         correct_time = datetime.datetime.now() - datetime.datetime.strptime(
                             request.session.get('game_start_time'), "%Y-%m-%d %H:%M:%S")
@@ -49,6 +50,28 @@ def get_chat_router(userService: UserService, gameService: GameService, querySer
                     return JSONResponse(content={"queryId": query_id, "queryCount": game.query_ticket, "response": response})
             else:
                 return JSONResponse(content={'error': "Failed to create query"}, status_code=400)
+        except Exception as e:
+            print(str(e))
+            return JSONResponse(content={"error": str(e)}, status_code=500)
+
+    # 정답을 맞췄을 때, 문제, 상황, 정답 보여주기
+    @router.get("/correct")
+    async def correct(request: Request):
+        try:
+            # token = get_token_from_header(request)
+            # user_email = await authenticate(token)
+            # user_id = userService.get_user_email(user_email)
+            body = await request.json()
+            game_id = body.get('gameId')
+            game = gameService.get_game(game_id)
+            situation = game.riddle.situation_split('$')
+            answer = game.riddle.answer.split('$')
+
+            if game.progress == 100:
+                return JSONResponse(content={'problem': game.riddle.problem, 'situation': situation, 'answer': answer})
+            else:
+                return JSONResponse(content={'error': 'Game not completed'}, status_code=400)
+
         except Exception as e:
             print(str(e))
             return JSONResponse(content={"error": str(e)}, status_code=500)

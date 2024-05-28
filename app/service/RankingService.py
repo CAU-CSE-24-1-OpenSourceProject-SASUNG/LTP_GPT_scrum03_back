@@ -38,7 +38,7 @@ class RankingService:
         return sorted(rankings, key=lambda x: x.play_time)[:3]
 
     def get_all_ranking(self, riddle_id):
-        return self.session.query(Ranking).filter_by(riddle_id=riddle_id).order_by(asc(Ranking.play_time)).all()
+        return self.session.query(Ranking).filter_by(riddle_id=riddle_id).order_by(asc(Ranking.correct_time)).all()
 
     def show_all_ranking(self, riddle_id):
         rankings = self.get_all_ranking(riddle_id)

@@ -14,8 +14,8 @@ class Riddle(Base):
     title = Column(String(255))
     problem = Column(String(255))
     situation = Column(String(3000))
-    answer = Column(String(255))
-    progress_sentences = Column(String(3000))
+    answer = Column(String(3000))
+
     hit_ratio = Column(Float)
     point_1 = Column(Integer)
     point_2 = Column(Integer)

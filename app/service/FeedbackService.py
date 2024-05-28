@@ -11,6 +11,8 @@ class FeedbackService:
         self.session.add(feedback)
         self.session.commit()
 
+        return feedback.feedback_id
+
     def get_feedback(self, query_id):
         return self.session.query(Feedback).filter_by(query_id=query_id).first()
 
@@ -22,6 +24,7 @@ class FeedbackService:
         if feedback:
             feedback.content = content
             self.session.commit()
+        return feedback.feedback_id
 
     def delete_feedback(self, query_id):
         feedback = self.get_feedback(query_id)

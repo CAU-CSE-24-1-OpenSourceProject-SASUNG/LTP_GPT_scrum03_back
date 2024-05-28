@@ -6,7 +6,6 @@ import openai
 from dotenv import load_dotenv
 
 from app.db_init import session
-from .service.RiddlePromptingService import RiddlePromptingService
 from .service.GameService import GameService
 from .service.UserService import UserService
 
@@ -30,7 +29,6 @@ def similarity(embedding1, embedding2):
 
 
 userService = UserService(session)
-riddlePromptingService = RiddlePromptingService(session)
 gameService = GameService(session)
 
 # Embedding

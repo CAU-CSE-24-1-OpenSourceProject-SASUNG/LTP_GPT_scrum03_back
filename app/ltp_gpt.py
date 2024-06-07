@@ -50,7 +50,7 @@ def embedding_question(question, riddle):
 
     # answer와 input의 결과로. similarity 계산, 그 중 최대치
     answer_similarities = [similarity(question_embedding, emb) for emb in answer_embedding]
-    max_answer_similarity = max(situation_similarities)
+    max_answer_similarity = max(answer_similarities)
 
     print('문제 유사도 = ' + str(problem_similarity))
     print('정답 유사도 = ' + str(max_answer_similarity))
@@ -120,8 +120,8 @@ Answer Table
     response = openai.chat.completions.create(
         model=model,
         messages= [
-            {'role' : 'system', 'content' : gpt_prompting },
-            {'role' : 'user', 'content' : question},
+            {'role' : 'system', 'content' : translate2english(gpt_prompting) },
+            {'role' : 'user', 'content' : translate2english(question) },
             ],
     )
     ans = response.choices[0].message.content
@@ -236,3 +236,38 @@ Answer Table
                 return "이미 문제에 제시된 내용입니다."
 
     return "문제의 정답과 관련이 없는 질문입니다."
+
+
+def translate2english(korean_text) :
+    prompting = """당신은 유능한 번역가이며, 당신에게 주어진 텍스트를 영어로 번역해서 출력해야 합니다. 만약에 텍스트의 일부가 영어라면 그 부분은 그대로 출력하면 됩니다. user의 입력에 대해 $으로 결과를 출력해주세요. 다음은 예시입니다.
+                 [예시1]
+                 입력 : 아이는 키가 작아?
+                 답변 : $Is child short?
+                 [예시2]
+                 입력 : 다음의 예시와 같이 표를 만들어주세요.
+                 Situation Table
+                | Situation Sentence | Decision | {True or False} |
+                |--------------------|----------|-----------------|
+                | {Situation Sentences 1} | {Compare with Situation Sentence 1 and User input} | {True or False} |
+                | {Situation Sentences 2} | {Compare with Situation Sentence 2 and User input} | {True or False} |
+                ...
+                 답변 : $Please make a table as shown in the following example.
+                 Situation Table
+                | Situation Sentence | Decision | {True or False} |
+                |--------------------|----------|-----------------|
+                | {Situation Sentences 1} | {Compare with Situation Sentence 1 and User input} | {True or False} |
+                | {Situation Sentences 2} | {Compare with Situation Sentence 2 and User input} | {True or False} |
+                ...
+                """
+
+                 
+    response = openai.chat.completions.create(
+        model=model,
+        messages=[
+            {'role' : 'system', 'content' : prompting},
+            {'role': 'user', 'content': korean_text},
+        ],
+    )
+    result = response.choices[0].message.content.split('$')
+    print(result[1])
+    return result[1]

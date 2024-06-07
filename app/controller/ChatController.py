@@ -64,7 +64,7 @@ def get_chat_router(userService: UserService, gameService: GameService, querySer
             body = await request.json()
             game_id = body.get('gameId')
             game = gameService.get_game(game_id)
-            situation = game.riddle.situation_split('$')
+            situation = game.riddle.situation.split('$')
             answer = game.riddle.answer.split('$')
 
             if game.progress == 100:

@@ -184,7 +184,7 @@ Answer Table
     progress = 100
     if True in AnsList:
         return_sentence = ""
-        for i in range(len(AnsList)-1, -1, -1):
+        for i in range(len(answers)-1, -1, -1):
             if AnsList[i] == True and i == len(AnsList) - 1:
                 progress = 100
                 return_sentence = "정확한 정답을 맞추셨습니다!"
@@ -235,4 +235,4 @@ Answer Table
             if ProList[i] == True:
                 return "이미 문제에 제시된 내용입니다."
 
-    return "문제의 정답과 관련이 없는 질문입니다."
+    return "아닙니다."

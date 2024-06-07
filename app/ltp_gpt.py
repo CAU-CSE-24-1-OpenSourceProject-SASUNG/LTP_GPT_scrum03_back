@@ -50,7 +50,7 @@ def embedding_question(question, riddle):
 
     # answer와 input의 결과로. similarity 계산, 그 중 최대치
     answer_similarities = [similarity(question_embedding, emb) for emb in answer_embedding]
-    max_answer_similarity = max(situation_similarities)
+    max_answer_similarity = max(answer_similarities)
 
     print('문제 유사도 = ' + str(problem_similarity))
     print('정답 유사도 = ' + str(max_answer_similarity))

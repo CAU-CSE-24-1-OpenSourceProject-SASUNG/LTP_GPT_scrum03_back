@@ -5,7 +5,7 @@ from app.service.UserService import UserService
 from app.util.util import *
 
 
-def get_feedback_router(userService: UserService, feedbackService: FeedbackService):
+def get_feedback_router(feedbackService: FeedbackService):
     router = APIRouter()
 
     @router.post('/new')

@@ -15,14 +15,11 @@ class UserService:
 
         return user.user_id
 
-    def get_user(self, user_id):
+    def get_user_by_user_id(self, user_id):
         return self.session.query(User).filter_by(user_id=user_id).first()
 
-    def get_user_email(self, gmail):
+    def get_user_by_email(self, gmail):
         return self.session.query(User).filter_by(gmail=gmail).first()
-
-    def get_all_user(self):
-        return self.session.query(User).all()
 
     def create_riddle(self, user_id):
         user = self.session.query(User).filter_by(user_id=user_id).first()
@@ -43,13 +40,13 @@ class UserService:
             return False
 
     def level_up(self, user_id):
-        user = self.get_user(user_id)
+        user = self.get_user_by_user_id(user_id)
         if user:
             user.experience += 20
             self.session.commit()
 
     def delete_user(self, user_id):
-        user = self.get_user(user_id)
+        user = self.get_user_by_user_id(user_id)
         if user:
             user_games = self.session.query(User_Game).filter_by(user_id=user.user_id).all()
             total_feedback = self.session.query(Total_Feedback).filter_by(user_id=user.user_id).first()

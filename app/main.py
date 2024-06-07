@@ -62,13 +62,13 @@ app.include_router(get_game_router(userService, gameService, ugService, gqServic
 app.include_router(get_riddle_router(userService, riddleService), prefix="/riddle")
 app.include_router(get_user_router(userService), prefix="/user")
 app.include_router(get_ranking_router(rankingService), prefix="/ranking")
-app.include_router(get_feedback_router(userService, feedbackService), prefix="/feedback")
+app.include_router(get_feedback_router(feedbackService), prefix="/feedback")
 app.include_router(get_totalFeedback_router(userService, totalFeedbackService), prefix="/totalFeedback")
 
 # DB 모든 데이터 삭제
 with engine.connect() as conn:
     table_names = ['user_games', 'total_feedbacks', 'users', 'game_queries', 'games', 'feedbacks', 'queries', 'ranking']
-    # table_names = ['user_games', 'total_feedbacks', 'users', 'game_queries', 'games', 'feedbacks', 'queries', 'riddles', 'riddle_prompting']
+    # table_names = ['user_games', 'total_feedbacks', 'users', 'game_queries', 'games', 'feedbacks', 'queries', 'riddles']
     conn.execute(text('SET FOREIGN_KEY_CHECKS = 0;'))  # 외래 키 제약 조건을 잠시 해제
     for table_name in table_names:
         delete_query = text('TRUNCATE TABLE {};'.format(table_name))

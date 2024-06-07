@@ -13,7 +13,7 @@ class UserGameService:
         self.session.add(user_game)
         self.session.commit()
 
-    def get_recent_game(self, user_id):
+    def get_recent_game_by_user_id(self, user_id):
         user_games = self.session.query(User_Game).filter_by(user_id=user_id).all()
         game_ids = [user_game.game_id for user_game in user_games]
         game = self.session.query(Game) \
@@ -22,7 +22,7 @@ class UserGameService:
             .first()
         return game
 
-    def get_recent_games(self, user_id):
+    def get_recent_games_by_user_id(self, user_id):
         user_games = self.session.query(User_Game).filter_by(user_id=user_id).all()
         game_ids = [user_game.game_id for user_game in user_games]
         games = self.session.query(Game) \

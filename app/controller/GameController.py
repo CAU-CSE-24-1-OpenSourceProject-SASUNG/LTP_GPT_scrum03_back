@@ -21,8 +21,8 @@ def get_game_router(userService: UserService, gameService: GameService, ugServic
     async def lookup(request: Request):
         token = get_token_from_header(request)
         user_email = await authenticate(token)
-        user = userService.get_user_email(user_email)
-        games = ugService.get_recent_games(user.user_id)
+        user = userService.get_user_by_email(user_email)
+        games = ugService.get_recent_games_by_user_id(user.user_id)
         recent_games = [{'gameId': game.game_id, 'gameTitle': game.title} for game in games]
         return JSONResponse(content=recent_games)
 
@@ -31,8 +31,8 @@ def get_game_router(userService: UserService, gameService: GameService, ugServic
     async def access(request: Request):
         token = get_token_from_header(request)
         user_email = await authenticate(token)
-        user = userService.get_user_email(user_email)
-        game = ugService.get_recent_game(user.user_id)
+        user = userService.get_user_by_email(user_email)
+        game = ugService.get_recent_game_by_user_id(user.user_id)
         # gameService.reaccess(game.game_id)
         return JSONResponse(content={'gameId': game.game_id})
 
@@ -44,7 +44,7 @@ def get_game_router(userService: UserService, gameService: GameService, ugServic
             riddle_id = body.get("riddleId")
             token = get_token_from_header(request)
             user_email = await authenticate(token)
-            user = userService.get_user_email(user_email)
+            user = userService.get_user_by_email(user_email)
 
             if userService.create_game(user.user_id) is True:
                 game_id = gameService.create_game(user.user_id, riddle_id)  # game 생성
@@ -62,22 +62,22 @@ def get_game_router(userService: UserService, gameService: GameService, ugServic
         try:
             body = await request.json()
             game_id = body.get('gameId')
-            game = gameService.get_game(game_id)
+            game = gameService.get_game_by_game_id(game_id)
             return JSONResponse(content={'progress': game.progress})
         except Exception as e:
             print(str(e))
             return JSONResponse(content={"error": str(e)}, status_code=404)
 
-    # 게임 접속하기
+    # 게임 접속
     @router.get('/info')
     async def access_game(request: Request, gameId: str = Query(...)):
         try:
             token = get_token_from_header(request)
             user_email = await authenticate(token)
-            user = userService.get_user_email(user_email)
-            game = gameService.get_game(gameId)
-            riddle = riddleService.get_riddle(game.riddle_id)
-            game_queries = gqService.get_queries(gameId)
+            user = userService.get_user_by_email(user_email)
+            game = gameService.get_game_by_game_id(gameId)
+            riddle = riddleService.get_riddle_by_riddle_id(game.riddle_id)
+            game_queries = gqService.get_queries_by_game_id(gameId)
             queries = [game_query.query for game_query in game_queries]
             queries.sort(key=lambda x: x.createdAt)  # query 생성 시각 순으로 오름차순 정렬
             game_info = [{'gameTitle': game.title, 'problem': riddle.problem}]

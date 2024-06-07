@@ -13,5 +13,5 @@ class GameQueryService:
         self.session.add(game_query)
         self.session.commit()
 
-    def get_queries(self, game_id):
+    def get_queries_by_game_id(self, game_id):
         return self.session.query(Game_Query).filter_by(game_id=game_id).all()

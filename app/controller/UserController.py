@@ -15,7 +15,7 @@ def get_user_router(userService: UserService):
     @router.post("/login")
     async def login(user: UserDto):
         # 로그인 유저가 DB에 있는지 검사한뒤
-        existing_user = userService.get_user_email(user.email)
+        existing_user = userService.get_user_by_email(user.email)
         try:
             # 있다면 토큰을 발행하고 리턴
             if existing_user:
@@ -36,7 +36,7 @@ def get_user_router(userService: UserService):
         try:
             token = get_token_from_header(request)
             user_email = await authenticate(token)
-            user = userService.get_user_email(user_email)
+            user = userService.get_user_by_email(user_email)
             return JSONResponse(content={"experience": user.experience, "riddleTicket": user.riddle_ticket,
                                          "gameTicket": user.game_ticket})
         except Exception as e:

@@ -28,27 +28,21 @@ class GameService:
 
         return game.game_id
 
-    def get_game(self, game_id):
+    def get_game_by_game_id(self, game_id):
         return self.session.query(Game).filter_by(game_id=game_id).first()
-
-    def get_game_by_user(self, user_id):
-        return self.session.query(User_Game).filter_by(user_id=user_id).limit(20).all()
 
     def get_all_game(self):
         return self.session.query(Game).all()
 
-    def get_game_count(self, riddle_id):
-        return self.session.query(Game).filter_by(riddle_id=riddle_id).count()
-
     # 게임에 재접속
     def reaccess(self, game_id):
-        game = self.get_game(game_id)
+        game = self.get_game_by_game_id(game_id)
         game.is_first = False
         game.updatedAt = datetime.datetime.now()
 
     # 첫 게임에서 정답을 맞췄을 때
     def first_correct_game(self, game_id):
-        game = self.get_game(game_id)
+        game = self.get_game_by_game_id(game_id)
         correct_time = datetime.datetime.now() - game.createdAt
         if game:
             game_queries = self.session.query(Game_Query).filter_by(game_id=game.game_id).all()
@@ -63,7 +57,7 @@ class GameService:
 
     # 첫 게임이 아닌 게임에서 정답을 맞췄을 때
     def correct_game(self, game_id):
-        game = self.get_game(game_id)
+        game = self.get_game_by_game_id(game_id)
         play_time = datetime.datetime.now() - game.createdAt
         if game:
             game_queries = self.session.query(Game_Query).filter_by(game_id=game.game_id).all()
@@ -76,7 +70,7 @@ class GameService:
 
     # 진행률 업데이트
     def set_progress(self, game_id, progress):
-        game = self.get_game(game_id)
+        game = self.get_game_by_game_id(game_id)
         if game.progress < progress:
             game.progress = progress
             self.session.add(game)
@@ -84,11 +78,11 @@ class GameService:
 
     # 진행률 조회
     def get_progress(self, game_id):
-        game = self.get_game(game_id)
+        game = self.get_game_by_game_id(game_id)
         return game.progress
 
     def delete_game(self, game_id):
-        game = self.get_game(game_id)
+        game = self.get_game_by_game_id(game_id)
         if game:
             user_game = self.session.query(User_Game).filter_by(game_id=game.game_id).first()
             game_queries = self.session.query(Game_Query).filter_by(game_id=game.game_id).all()

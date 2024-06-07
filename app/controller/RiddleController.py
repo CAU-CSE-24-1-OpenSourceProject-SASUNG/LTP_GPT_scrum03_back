@@ -24,7 +24,7 @@ def get_riddle_router(userService: UserService, riddleService: RiddleService):
         try:
             token = get_token_from_header(request)
             user_email = await authenticate(token)
-            user = userService.get_user_email(user_email)
+            user = userService.get_user_by_email(user_email)
             body = await request.json()
             riddleTitle = body.get('riddleTitle')
             problem = body.get('problem')

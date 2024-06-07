@@ -26,37 +26,36 @@ class RiddleService:
         self.session.commit()
         return riddle.riddle_id
 
-    def get_riddle(self, riddle_id):
+    def get_riddle_by_riddle_id(self, riddle_id):
         return self.session.query(Riddle).filter_by(riddle_id=riddle_id).first()
-
-    def get_riddle_by_name(self, name):
-        return self.session.query(Riddle).filter_by(name=name).first()
 
     def get_all_riddle(self):
         return self.session.query(Riddle).all()
 
     def update_hit_ratio(self, riddle_id, hit_ratio):
-        riddle = self.get_riddle(riddle_id)
+        riddle = self.get_riddle_by_riddle_id(riddle_id)
         if riddle:
             riddle.hit_ratio = hit_ratio
             self.session.commit()
 
     def set_point(self, riddle_id, point):
-        riddle = self.get_riddle(riddle_id)
+        riddle = self.get_riddle_by_riddle_id(riddle_id)
         if riddle:
-            if point == 1:
+            if point == "1":
                 riddle.point_1 += 1
-            elif point == 2:
+            elif point == "2":
                 riddle.point_2 += 1
-            elif point == 3:
+            elif point == "3":
                 riddle.point_3 += 1
-            elif point == 4:
+            elif point == "4":
                 riddle.point_4 += 1
-            elif point == 5:
+            elif point == "5":
                 riddle.point_5 += 1
 
+        self.session.commit()
+
     def delete_riddle(self, riddle_id):
-        riddle = self.get_riddle(riddle_id)
+        riddle = self.get_riddle_by_riddle_id(riddle_id)
         if riddle:
             games = self.session.query(Game).filter_by(riddle_id=riddle.riddle_id).all()
             rankings = self.session.query(Ranking).filter_by(riddle_id=riddle.riddle_id).all()

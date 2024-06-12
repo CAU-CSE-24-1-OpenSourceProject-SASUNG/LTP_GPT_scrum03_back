@@ -14,7 +14,11 @@ class FeedbackService:
         return feedback.feedback_id
 
     def get_feedback_by_query_id(self, query_id):
-        return self.session.query(Feedback).filter_by(query_id=query_id).first()
+        feedback = self.session.query(Feedback).filter_by(query_id=query_id).first()
+        if feedback:
+            return feedback
+        else:
+            return None
 
     def get_all_feedback(self):
         return self.session.query(Feedback).all()

@@ -58,10 +58,9 @@ def get_game_router(userService: UserService, gameService: GameService, ugServic
 
     # 게임 진행률 조회
     @router.get('/progress')
-    async def progress(request: Request):
+    async def progress(gameId: str = Query(...)):
         try:
-            body = await request.json()
-            game_id = body.get('gameId')
+            game_id = gameId
             game = gameService.get_game_by_game_id(game_id)
             return JSONResponse(content={'progress': game.progress})
         except Exception as e:
@@ -80,7 +79,7 @@ def get_game_router(userService: UserService, gameService: GameService, ugServic
             game_queries = gqService.get_queries_by_game_id(gameId)
             queries = [game_query.query for game_query in game_queries]
             queries.sort(key=lambda x: x.createdAt)  # query 생성 시각 순으로 오름차순 정렬
-            game_info = [{'gameTitle': game.title, 'problem': riddle.problem}]
+            game_info = [{'gameTitle': game.title, 'problem': riddle.problem, 'queryCount': game.query_ticket}]
             for query in queries:
                 game_info.append({
                     'queryId': query.query_id,

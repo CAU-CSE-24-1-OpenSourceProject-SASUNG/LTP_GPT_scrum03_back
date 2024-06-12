@@ -63,7 +63,7 @@ app.include_router(get_riddle_router(userService, riddleService), prefix="/riddl
 app.include_router(get_user_router(userService), prefix="/user")
 app.include_router(get_ranking_router(rankingService), prefix="/ranking")
 app.include_router(get_feedback_router(feedbackService), prefix="/feedback")
-app.include_router(get_totalFeedback_router(userService, totalFeedbackService), prefix="/totalFeedback")
+app.include_router(get_totalFeedback_router(userService, totalFeedbackService), prefix="/totalfeedback")
 
 # DB 모든 데이터 삭제
 with engine.connect() as conn:

@@ -13,7 +13,11 @@ class TotalFeedbackService:
         return total_feedback.total_feedback_id
 
     def get_totalFeedback_by_user_id(self, user_id):
-        return self.session.query(Total_Feedback).filter_by(user_id=user_id).first()
+        totalFeedback = self.session.query(Total_Feedback).filter_by(user_id=user_id).first()
+        if totalFeedback:
+            return totalFeedback
+        else:
+            return None
 
     def get_totalFeedback_by_total_feedback_id(self, total_feedback_id):
         return self.session.query(Total_Feedback).filter_by(total_feedback_id=total_feedback_id).first()

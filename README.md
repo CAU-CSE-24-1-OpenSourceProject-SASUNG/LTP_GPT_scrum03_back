@@ -1,21 +1,49 @@
-# LTP_GPT_scrum_03
+# backend test server
 
+1. Mysql configuration (make osp database)
 ```bash
-git clone {URL}
+mysql -u root -p
 
-cd LTP_GPT_scrum_03back
+CREATE DATABASE osp;
+exit
+```
 
+2. cd <backend directory>
+
+3. modify app/db_init.py
+```bash
+vi app/db_init.py
+
+(line 18)
+engine = create_engine('mysql+pymysql://root:비밀번호@localhost/osp', echo=False)
+
+:wq
+```
+
+4. create venv and access
+```bash
 python3 -m venv venv
-
 source venv/bin/activate
+```
 
-pip install -r requirements.txt
+5. install requirements
+```bash
+pip3 install -r requirements.txt
+```
 
+6. make .env file
+```bash
 vi .env
 
-### add .env 
-OPENAI_API_KEY=sk-...
-### save and exit with ":wq"
+OPENAI_API_KEY	= sk-{your_key}
+CLIENT_ID		= 373805319561-p5ff6n7uimubjov3uq51l241qg8u4rs0.apps.googleusercontent.com
+CLIENT_SECRET	= {any_long_string}
+SECRET_KEY		= {any_long_string}
 
-python3 main.app
+:wq
+
+```
+7. BackEnd Server On
+```bash
+python3 main.py
 ```

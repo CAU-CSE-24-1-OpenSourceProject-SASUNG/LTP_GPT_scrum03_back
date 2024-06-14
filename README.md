@@ -39,9 +39,9 @@ pip3 install -r requirements.txt
 vi .env
 
 OPENAI_API_KEY	= sk-{your_key}
-CLIENT_ID		= 373805319561-p5ff6n7uimubjov3uq51l241qg8u4rs0.apps.googleusercontent.com
+CLIENT_ID	= 373805319561-p5ff6n7uimubjov3uq51l241qg8u4rs0.apps.googleusercontent.com
 CLIENT_SECRET	= {any_long_string}
-SECRET_KEY		= {any_long_string}
+SECRET_KEY	= {any_long_string}
 
 :wq
 

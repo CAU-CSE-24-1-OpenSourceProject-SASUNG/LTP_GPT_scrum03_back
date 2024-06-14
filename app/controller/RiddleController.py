@@ -15,7 +15,7 @@ def get_riddle_router(userService: UserService, riddleService: RiddleService):
         token = get_token_from_header(request)
         await authenticate(token)
         riddles = riddleService.get_all_riddle()
-        all_riddles = [{'riddleId': riddle.riddle_id, 'riddleTitle': riddle.title} for riddle in riddles]
+        all_riddles = [{'riddleId': riddle.riddle_id, 'riddleTitle': riddle.title, 'hit_ratio': riddle.hit_ratio} for riddle in riddles]
         return JSONResponse(content=all_riddles)
 
     # 새로운 riddle 생성

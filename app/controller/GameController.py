@@ -52,6 +52,7 @@ def get_game_router(userService: UserService, gameService: GameService, ugServic
             if userService.create_game(user.user_id) is True:
                 game_id = gameService.create_game(user.user_id, riddle_id)  # game 생성
                 ugService.create_user_game(user.user_id, game_id)  # user_game 생성
+                riddleService.update_hit_ratio(riddle_id)
                 return JSONResponse(content={'newGameId': game_id})
             else:
                 return JSONResponse(content={'error': "Failed to create game"}, status_code=400)
@@ -82,7 +83,7 @@ def get_game_router(userService: UserService, gameService: GameService, ugServic
             game_queries = gqService.get_queries_by_game_id(gameId)
             queries = [game_query.query for game_query in game_queries]
             queries.sort(key=lambda x: x.createdAt)  # query 생성 시각 순으로 오름차순 정렬
-            game_info = [{'gameTitle': game.title, 'problem': riddle.problem, 'queryCount': game.query_ticket}]
+            game_info = [{'gameTitle': game.title, 'problem': riddle.problem, 'queryCount': game.query_ticket, 'hit_ratio': riddle.hit_ratio}]
             for query in queries:
                 game_info.append({
                     'queryId': query.query_id,

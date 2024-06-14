@@ -7,12 +7,13 @@ from app.service.GameQueryService import GameQueryService
 from app.service.GameService import GameService
 from app.service.QueryService import QueryService
 from app.service.RankingService import RankingService
+from app.service.RiddleService import RiddleService
 from app.service.UserService import UserService
 from app.util.util import *
 
 
 def get_chat_router(userService: UserService, gameService: GameService, queryService: QueryService,
-                    gqService: GameQueryService, rankingService: RankingService):
+                    gqService: GameQueryService, riddleService: RiddleService, rankingService: RankingService):
     router = APIRouter()
 
     # 채팅(질문)
@@ -44,9 +45,11 @@ def get_chat_router(userService: UserService, gameService: GameService, querySer
                         game = gameService.get_game_by_game_id(game_id)
                         rankingService.update_ranking(game)
                         userService.level_up(user.user_id)
+                        riddleService.update_hit_ratio(riddle.riddle_id)
                     elif game.is_first is False and game.hit is False and game.progress == 100:  # 나갔다 들어온 게임에서 정답을 맞췄을 때
                         gameService.correct_game(game_id)
                         userService.level_up(user.user_id)  # 경험치 증가
+                        riddleService.update_hit_ratio(riddle.riddle_id)
                     return JSONResponse(content={"queryId": query_id, "queryCount": game.query_ticket, "response": response})
             else:
                 return JSONResponse(content={'error': "Failed to create query"}, status_code=400)

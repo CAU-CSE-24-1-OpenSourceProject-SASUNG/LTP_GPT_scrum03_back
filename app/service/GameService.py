@@ -16,7 +16,8 @@ class GameService:
         user_games = self.session.query(User_Game).filter_by(user_id=user_id).all()
         for user_game in user_games:
             count += self.session.query(Game).filter_by(game_id=user_game.game_id, riddle_id=riddle_id).count()
-        riddle_title = self.session.query(Riddle).filter_by(riddle_id=riddle_id).first().title
+        riddle = self.session.query(Riddle).filter_by(riddle_id=riddle_id).first()
+        riddle_title = riddle.title
         title = f"{riddle_title} ({count})"
         createdAt = datetime.datetime.now()
         updatedAt = datetime.datetime.now()
@@ -33,6 +34,9 @@ class GameService:
 
     def get_all_game(self):
         return self.session.query(Game).all()
+
+    def get_game_count_about_riddle(self, riddle_id):
+        return self.session.query(Game).filter_by(riddle_id=riddle_id).count()
 
     # 게임에 재접속
     def reaccess(self, game_id):

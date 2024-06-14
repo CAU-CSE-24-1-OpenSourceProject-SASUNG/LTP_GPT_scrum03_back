@@ -57,7 +57,7 @@ ugService = UserGameService(session)
 gqService = GameQueryService(session)
 
 # 라우터 등록 (Controller)
-app.include_router(get_chat_router(userService, gameService, queryService, gqService, rankingService), prefix="/chat")
+app.include_router(get_chat_router(userService, gameService, queryService, gqService, riddleService, rankingService), prefix="/chat")
 app.include_router(get_game_router(userService, gameService, ugService, gqService, riddleService), prefix="/game")
 app.include_router(get_riddle_router(userService, riddleService), prefix="/riddle")
 app.include_router(get_user_router(userService), prefix="/user")

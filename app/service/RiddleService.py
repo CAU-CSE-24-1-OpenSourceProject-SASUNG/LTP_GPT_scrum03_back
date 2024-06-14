@@ -32,12 +32,6 @@ class RiddleService:
     def get_all_riddle(self):
         return self.session.query(Riddle).all()
 
-    def update_hit_ratio(self, riddle_id, hit_ratio):
-        riddle = self.get_riddle_by_riddle_id(riddle_id)
-        if riddle:
-            riddle.hit_ratio = hit_ratio
-            self.session.commit()
-
     def set_point(self, riddle_id, point):
         riddle = self.get_riddle_by_riddle_id(riddle_id)
         if riddle:
@@ -53,6 +47,24 @@ class RiddleService:
                 riddle.point_5 += 1
 
         self.session.commit()
+
+    def update_hit_ratio(self, riddle_id):
+        games = self.session.query(Game).filter_by(riddle_id=riddle_id).all()
+        riddle = self.get_riddle_by_riddle_id(riddle_id)
+        game_count = len(games)
+        hit_game_count = 0
+
+        for game in games:
+            if game.hit is True:
+                hit_game_count += 1
+
+        if game_count > 0:  # 게임이 있는 경우에만 계산
+            riddle.hit_ratio = round((hit_game_count / game_count) * 100, 1)
+        else:
+            riddle.hit_ratio = 0.0  # 게임이 없는 경우 hit_ratio를 0으로 설정
+
+        self.session.commit()
+
 
     def delete_riddle(self, riddle_id):
         riddle = self.get_riddle_by_riddle_id(riddle_id)

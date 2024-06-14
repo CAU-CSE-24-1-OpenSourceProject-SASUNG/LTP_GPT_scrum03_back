@@ -34,7 +34,10 @@ def get_game_router(userService: UserService, gameService: GameService, ugServic
         user = userService.get_user_by_email(user_email)
         game = ugService.get_recent_game_by_user_id(user.user_id)
         # gameService.reaccess(game.game_id)
-        return JSONResponse(content={'gameId': game.game_id})
+        if game:
+            return JSONResponse(content={'gameId': game.game_id})
+        else:
+            return JSONResponse(content={'error': "Failed to recent game"}, status_code=400)
 
     # 새로운 게임 생성
     @router.post('/new')

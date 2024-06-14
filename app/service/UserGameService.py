@@ -20,7 +20,10 @@ class UserGameService:
             .filter(Game.game_id.in_(game_ids)) \
             .order_by(desc(Game.updatedAt)) \
             .first()
-        return game
+        if game:
+            return game
+        else:
+            return None
 
     def get_recent_games_by_user_id(self, user_id):
         user_games = self.session.query(User_Game).filter_by(user_id=user_id).all()

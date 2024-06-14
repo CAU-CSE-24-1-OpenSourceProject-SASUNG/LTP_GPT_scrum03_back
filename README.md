@@ -1,4 +1,4 @@
-# backend test server
+# TEST SERVER OPEN METHOD
 
 1. Mysql configuration (make osp database)
 ```bash
@@ -8,7 +8,10 @@ CREATE DATABASE osp;
 exit
 ```
 
-2. cd <backend directory>
+2. goto Backend directory
+```bash
+cd {backend directory}
+```
 
 3. modify app/db_init.py
 ```bash
